@@ -39,7 +39,7 @@ export default function NavBar() {
           </Typography>
           { token ? (<Button sx={{ color: "black" }} onClick={logoutHandler}>
             Logout
-          </Button>) :(<Button sx={{ color: "black" }}>
+          </Button>) :(<Button sx={{ color: "black" }} onClick={()=>{navigate("/login")}}>
             Login
           </Button>)
 

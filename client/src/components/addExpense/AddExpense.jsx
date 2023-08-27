@@ -1,18 +1,17 @@
 import React, { useContext, useState } from "react";
 import moment from "moment";
-import "./addExpense.css";
 import axios from "axios";
-import ExpenseContext from "../../store/ExpenseContext";
-
+import "./addExpense.css";
 
 export const AddExpense = () => {
-  const ExpenseCtx = useContext(ExpenseContext);
+  const [expensesData, setExpensesData] = useState();
   const [resMessage, setResMessage] = useState("");
   const [formInput, setFormInput] = useState({
     exp_desc: "",
     exp_date: "",
     amount_spent: "",
     reciept_image: "",
+    pdf_file: "",
   });
 
   const descHandler = (event) => {
@@ -53,6 +52,7 @@ export const AddExpense = () => {
   };
 
   const formSubmitHandler = async (event) => {
+    event.preventDefault();
     let error = "";
     if (formInput.exp_desc === "" && error === "") {
       error = "Please enter expense description";
@@ -68,7 +68,6 @@ export const AddExpense = () => {
     }
     if (error === "") await saveExpenseData(formInput);
 
-    event.preventDefault();
   };
 
   const saveExpenseData = async (formData) => {
@@ -79,6 +78,7 @@ export const AddExpense = () => {
         exp_date: formData.exp_date,
         amount_spent: formData.amount_spent,
         reciept_image: formData.reciept_image,
+        pdf_file: formData.pdf_file,
       };
 
       const res = await axios.post(
@@ -91,7 +91,7 @@ export const AddExpense = () => {
           },
         }
       );
-      ExpenseCtx.setExpenses([...ExpenseCtx.expenses, expense]);
+      console.log(res);
       setResMessage("");
       console.log(res.data.message);
     } catch (err) {
@@ -124,9 +124,26 @@ export const AddExpense = () => {
           </div>
           <div className="form-input">
             <input
-              type="text"
-              placeholder="Reciept Image"
-              onChange={imgHandler}
+              type="file"
+              accept="image/*" // Allow all image types
+              onChange={(event) =>
+                setFormInput((prevState) => ({
+                  ...prevState,
+                  reciept_image: event.target.files[0],
+                }))
+              }
+            />
+          </div>
+          <div className="form-input">
+            <input
+              type="file"
+              accept="application/pdf" // Restrict file selection to PDFs
+              onChange={(event) =>
+                setFormInput((prevState) => ({
+                  ...prevState,
+                  pdf_file: event.target.files[0],
+                }))
+              }
             />
           </div>
           <button type="submit">Add Expense</button>

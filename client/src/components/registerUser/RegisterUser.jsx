@@ -3,30 +3,42 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useEffect } from "react";
 
 const defaultTheme = createTheme();
 
-export default function LoginUserPage() {
+export default function RegisterUser() {
   const navigate = useNavigate();
-  useEffect(() => {
+  React.useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       navigate("/user/expense");
     }
   }, []);
   const [user, setUser] = React.useState({
+    full_name: "",
     email: "",
     password: "",
   });
+
+  const fullnameHandler = (event) => {
+    setUser((prevState) => {
+      return {
+        ...prevState,
+        full_name: event.target.value,
+      };
+    });
+  };
 
   const emailHandler = (event) => {
     setUser((prevState) => {
@@ -49,14 +61,14 @@ export default function LoginUserPage() {
   const handleSubmit = async (event) => {
     try {
       event.preventDefault();
-      const res = await axios.post("http://localhost:4000/user/login", user, {
+      const res = await axios.post("http://localhost:4000/user/add", user, {
         headers: {
           "Content-Type": "application/json",
         },
       });
       localStorage.setItem("user", res.data.user.user_id);
       localStorage.setItem("token", res.data.token);
-      navigate("/user/expense/");
+      navigate("/login/user/");
       console.log(res.data.message);
     } catch (err) {
       console.log(err.message);
@@ -79,7 +91,7 @@ export default function LoginUserPage() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            User Login
+            User Sign up
           </Typography>
           <Box
             component="form"
@@ -87,6 +99,17 @@ export default function LoginUserPage() {
             noValidate
             sx={{ mt: 1 }}
           >
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="full_name"
+              label="Full Name"
+              name="fullname"
+              autoComplete="name"
+              autoFocus
+              onChange={fullnameHandler}
+            />
             <TextField
               margin="normal"
               required
@@ -115,16 +138,8 @@ export default function LoginUserPage() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Login
+              Sign Up
             </Button>
-            <Grid container>
-              <Grid item>
-                {/* <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link> */}
-                <Link to="/user/registration">{"Don't have an account? Sign Up"}</Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
       </Container>

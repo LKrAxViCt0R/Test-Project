@@ -3,6 +3,7 @@ import { Expense } from "../expense/Expense";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./allExpenses.css";
+import { Container } from "@mui/material";
 
 export const AllExpense = () => {
   const [expenseData, setExpenseData] = useState();
@@ -17,7 +18,7 @@ export const AllExpense = () => {
     }
     try {
       const res = await axios.get("http://localhost:4000/expense");
-      console.log("data res",res);
+      console.log("data res", res);
       setExpenseData(res.data.expenses);
     } catch (err) {
       if (err.response) {
@@ -29,27 +30,36 @@ export const AllExpense = () => {
       }
     }
   };
-  console.log("data",expenseData)
+  console.log("data", expenseData);
   return (
     <div className="admin-expense-container">
-      <h1>Your Expenses</h1>
-
-      {
-        expenseData && expenseData.length>0 ? (expenseData.map((expense, index) => (
-        <Expense
-          key={index}
-          desc={expense.exp_desc}
-          date={expense.exp_date}
-          amt={expense.amount_spent}
-          imgSrc={expense.reciept_image}
-          status={expense.exp_status}
-          disable={false}
-        />
-      ))) :(<>
-        No Data
-      </>)
-      }
-      
+      <h1 style={{ textAlign: "center" }}>All Expenses</h1>
+      <Container
+        sx={{
+          display: "flex",
+          gap: 5,
+          margin: 0,
+          flexWrap: "wrap",
+        }}
+      >
+        {expenseData && expenseData.length > 0 ? (
+          expenseData.map((expense, index) => (
+            <Expense
+              key={index}
+              id = {expense._id}
+              desc={expense.exp_desc}
+              date={expense.exp_date}
+              amt={expense.amount_spent}
+              imgSrc={expense.reciept_image}
+              status={expense.exp_status}
+              disable={false}
+              getExpenses={getExpenses}
+            />
+          ))
+        ) : (
+          <>No Data</>
+        )}
+      </Container>
     </div>
   );
 };

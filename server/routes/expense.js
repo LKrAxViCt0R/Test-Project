@@ -2,7 +2,7 @@ const express = require("express");
 const { Expense } = require("../models/Expense");
 const Auth = require("../middlewares/Auth");
 const AdminAuth = require("../middlewares/AdminAuth");
-
+const upload = require("../middlewares/upload")
 const router = express.Router();
 
 router.get("/", async (req, res) => {
@@ -20,13 +20,13 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/add/:userId", Auth, async (req, res) => {
+router.post("/add/:userId", upload.single("reciept_image"),Auth, async (req, res) => {
   try {
     let error = "";
     const id = req.params.userId;
 
     console.log("reached expense add route");
-    const { exp_desc, exp_date, amount_spent, reciept_image } = req.body;
+    const { exp_desc, exp_date, amount_spent } = req.body;
 
     if (exp_desc == "" && error == "") {
       error = "Expense Description missing";
@@ -39,12 +39,14 @@ router.post("/add/:userId", Auth, async (req, res) => {
       exp_desc,
       exp_date,
       amount_spent,
-      reciept_image,
       exp_status: "Pending",
-      userId:id,
+      userId: id,
     };
 
     const expense = new Expense(expenseObj);
+    if(req.file){
+      expense.reciept_image = req.file.path
+    }
 
     await expense.save();
     return res.status(200).json({
@@ -64,7 +66,6 @@ router.put("/update/:id", AdminAuth, async (req, res) => {
   try {
     const id = req.params.id;
     const { exp_status } = req.body;
-
     await Expense.findByIdAndUpdate(id, {
       exp_status,
     });
@@ -85,7 +86,7 @@ router.get("/userexpense/:userId", async (req, res) => {
   try {
     const id = req.params.userId;
 
-    const expense = await Expense.find({userId:id});
+    const expense = await Expense.find({ userId: id });
 
     return res.status(200).json({
       message: "Data fetched successfully",

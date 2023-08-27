@@ -1,27 +1,30 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./userExpense.css";
 import { Expense } from "../expense/Expense";
 import axios from "axios";
-import ExpenseContext from "../../store/ExpenseContext";
 import { Link, useNavigate } from "react-router-dom";
+import { Container } from "@mui/material";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
 
 export const UserExpense = () => {
-  const ExpenseCtx = useContext(ExpenseContext);
+  const [expenseData, setExpenseData] = useState();
   const navigate = useNavigate();
   useEffect(() => {
     getExpenses();
-  }, [ExpenseCtx.expenses]);
+  }, []);
   const getExpenses = async () => {
-    
     const token = localStorage.getItem("token");
-    if(!token){
+    if (!token) {
       navigate("/");
     }
     const userId = localStorage.getItem("user");
     try {
-      const res = await axios.get(`http://localhost:4000/expense/userexpense/${userId}`);
+      const res = await axios.get(
+        `http://localhost:4000/expense/userexpense/${userId}`
+      );
       console.log(res);
-      ExpenseCtx.setExpenses(res.data.expense);
+      setExpenseData(res.data.expense);
     } catch (err) {
       if (err.response) {
         console.log(err.response.data);
@@ -35,19 +38,37 @@ export const UserExpense = () => {
 
   return (
     <div className="user-expense-container">
-      <h1>Your Expenses</h1>
-      {ExpenseCtx.expenses.map((expense, index) => (
-        <Expense
-          key={index}
-          desc={expense.exp_desc}
-          date={expense.exp_date}
-          amt={expense.amount_spent}
-          imgSrc={expense.reciept_image}
-          status={expense.exp_status}
-          disable={true}
-        />
-      ))}
-      <li><Link to="/user/expense/add" >Add Expense</Link></li>
+      <h1 style={{ textAlign: "center" }}>Your Expenses</h1>
+      <Container
+        sx={{
+          display: "flex",
+          gap: 5,
+          margin: 0,
+          flexWrap: "wrap",
+        }}
+      >
+        {expenseData && expenseData.length > 0 ? (
+          expenseData.map((expense, index) => (
+            <Expense
+              key={index}
+              desc={expense.exp_desc}
+              date={expense.exp_date}
+              amt={expense.amount_spent}
+              imgSrc={expense.reciept_image}
+              status={expense.exp_status}
+              disable={true}
+            />
+          ))
+        ) : (
+          <>No Data</>
+        )}
+      </Container>
+      <Link to="/user/expense/add">
+        <Fab variant="extended" sx={{marginTop: 2,marginLeft: 3}}>
+          <AddIcon sx={{ mr: 1 }} />
+          Add Expense
+        </Fab>
+      </Link>
     </div>
   );
 };

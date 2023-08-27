@@ -9,6 +9,8 @@ import { AuthStatee } from "./store/AuthStatee";
 import NavBar from "./components/navbar/NavBar";
 import LoginUserPage from "./components/loginUserPage/loginUserPage";
 import LoginAdminPage from "./components/loginAdminPage/LoginAdminPage";
+import RegisterUser from "./components/registerUser/RegisterUser";
+import { Login } from "./components/login/Login";
 
 function App() {
   return (
@@ -18,13 +20,12 @@ function App() {
           <NavBar />
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/user/registration" element={<RegisterUser />} />
             <Route path="/login/user" element={<LoginUserPage />} />
             <Route path="/login/admin" element={<LoginAdminPage />} />
-
             <Route path="/user/expense/" element={<UserExpense />} />
-
             <Route path="/user/expense/add" element={<AddExpense />} />
-
             <Route path="/admin/expense/" element={<AllExpense />} />
           </Routes>
         </ExpenseState>
