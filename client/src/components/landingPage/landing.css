@@ -1,0 +1,19 @@
+.content-container{
+    display: flex;
+    justify-content: center;
+}
+
+.grid-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.img-landing{
+    height: 586px;
+}
+
+.img-box{
+    margin-left: 60px;
+}

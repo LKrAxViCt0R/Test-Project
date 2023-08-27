@@ -7,13 +7,21 @@ import { Link, useNavigate } from "react-router-dom";
 
 export const UserExpense = () => {
   const ExpenseCtx = useContext(ExpenseContext);
+  const navigate = useNavigate();
   useEffect(() => {
     getExpenses();
   }, [ExpenseCtx.expenses]);
   const getExpenses = async () => {
+    
+    const token = localStorage.getItem("token");
+    if(!token){
+      navigate("/");
+    }
+    const userId = localStorage.getItem("user");
     try {
-      const res = await axios.get("http://localhost:4000/expense");
-      ExpenseCtx.setExpenses(res.data.expenses);
+      const res = await axios.get(`http://localhost:4000/expense/userexpense/${userId}`);
+      console.log(res);
+      ExpenseCtx.setExpenses(res.data.expense);
     } catch (err) {
       if (err.response) {
         console.log(err.response.data);

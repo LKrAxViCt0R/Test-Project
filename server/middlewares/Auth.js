@@ -10,7 +10,7 @@ const Auth = async (req, res, next) => {
       });
     }
 
-    if (await jwt.verify(token, "expensetracker")) {
+    if (jwt.verify(token, "expensetracker")) {
       next();
     } else {
       return res.status(401).json({

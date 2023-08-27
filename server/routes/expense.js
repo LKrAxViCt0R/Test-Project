@@ -20,9 +20,10 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/add", Auth, async (req, res) => {
+router.post("/add/:userId", Auth, async (req, res) => {
   try {
     let error = "";
+    const id = req.params.userId;
 
     console.log("reached expense add route");
     const { exp_desc, exp_date, amount_spent, reciept_image } = req.body;
@@ -40,6 +41,7 @@ router.post("/add", Auth, async (req, res) => {
       amount_spent,
       reciept_image,
       exp_status: "Pending",
+      userId:id,
     };
 
     const expense = new Expense(expenseObj);
@@ -79,11 +81,11 @@ router.put("/update/:id", AdminAuth, async (req, res) => {
   }
 });
 
-router.get("/expenseId/:expenseId", async (req, res) => {
+router.get("/userexpense/:userId", async (req, res) => {
   try {
-    const id = req.params.expenseId;
+    const id = req.params.userId;
 
-    const expense = await Expense.findById(id);
+    const expense = await Expense.find({userId:id});
 
     return res.status(200).json({
       message: "Data fetched successfully",

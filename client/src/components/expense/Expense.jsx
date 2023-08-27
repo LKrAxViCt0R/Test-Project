@@ -2,6 +2,7 @@ import React from "react";
 import "./expense.css";
 
 export const Expense = (props) => {
+  console.log(props)
   return (
     <div className="expense-container">
       <div className="expense-description">

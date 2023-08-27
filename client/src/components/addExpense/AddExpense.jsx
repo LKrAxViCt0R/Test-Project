@@ -4,6 +4,7 @@ import "./addExpense.css";
 import axios from "axios";
 import ExpenseContext from "../../store/ExpenseContext";
 
+
 export const AddExpense = () => {
   const ExpenseCtx = useContext(ExpenseContext);
   const [resMessage, setResMessage] = useState("");
@@ -71,6 +72,7 @@ export const AddExpense = () => {
   };
 
   const saveExpenseData = async (formData) => {
+    const userId = localStorage.getItem("user");
     try {
       const expense = {
         exp_desc: formData.exp_desc,
@@ -80,7 +82,7 @@ export const AddExpense = () => {
       };
 
       const res = await axios.post(
-        "http://localhost:4000/expense/add",
+        `http://localhost:4000/expense/add/${userId}/`,
         expense,
         {
           headers: {

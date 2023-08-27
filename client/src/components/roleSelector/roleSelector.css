@@ -1,0 +1,26 @@
+.option-container{
+    display: flex;
+    justify-content: center;
+    gap: 200px;
+}
+
+.option{
+    width: 600px;
+    height: 600px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.admin-img{
+    height: 600px;
+    width: 600px;
+}
+
+.option img{
+    filter: grayscale(100%);
+    transition: filter 0.1s ease-in-out;
+}
+
+.option:hover img {
+    filter: grayscale(0%);
+}

@@ -1,18 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
-import "./allExpenses.css";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { Expense } from "../expense/Expense";
-import ExpenseContext from "../../store/ExpenseContext";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "./allExpenses.css";
+
 export const AllExpense = () => {
-    const ExpenseCtx = useContext(ExpenseContext);
+  const [expenseData, setExpenseData] = useState();
   useEffect(() => {
     getExpenses();
-  }, [ExpenseCtx.expenses]);
-
+  }, []);
+  const navigate = useNavigate();
   const getExpenses = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
     try {
       const res = await axios.get("http://localhost:4000/expense");
-      ExpenseCtx.setExpenses(res.data.expenses);
+      console.log("data res",res);
+      setExpenseData(res.data.expenses);
     } catch (err) {
       if (err.response) {
         console.log(err.response.data);
@@ -23,11 +29,13 @@ export const AllExpense = () => {
       }
     }
   };
-
+  console.log("data",expenseData)
   return (
     <div className="admin-expense-container">
       <h1>Your Expenses</h1>
-      {ExpenseCtx.expenses.map((expense, index) => (
+
+      {
+        expenseData && expenseData.length>0 ? (expenseData.map((expense, index) => (
         <Expense
           key={index}
           desc={expense.exp_desc}
@@ -37,7 +45,11 @@ export const AllExpense = () => {
           status={expense.exp_status}
           disable={false}
         />
-      ))}
+      ))) :(<>
+        No Data
+      </>)
+      }
+      
     </div>
   );
 };
