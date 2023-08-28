@@ -1,0 +1,73 @@
+.expense-add-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+  }
+  
+  .expense-add-container h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .expense-add-container h3 {
+    font-size: 16px;
+    color: #ff5733;
+    margin-bottom: 10px;
+  }
+  
+  .add-form-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-input {
+    margin-bottom: 15px;
+  }
+  
+  .form-input input[type="text"],
+  .form-input input[type="date"],
+  .form-input input[type="file"] {
+    width: 95%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .form-input input[type="text"]:focus,
+  .form-input input[type="date"]:focus,
+  .form-input input[type="file"]:focus {
+    border-color: #1976d2;
+    outline: none;
+  }
+  
+  button[type="submit"] {
+    background-color: #1976d2;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #1565c0;
+  }
+  
+  @media (max-width: 480px) {
+    .expense-add-container {
+      max-width: 100%;
+    }
+  }
+
+  h3.success {
+    color: #4caf50;
+  }
+  

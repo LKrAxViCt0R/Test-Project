@@ -14,40 +14,78 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import "./allExpenses.css";
 
-const options = ["All Data","User Id", "Amount"];
+const options = ["All Data", "User Id", "Amount", "Status", "Date"];
 
 export const AllExpense = () => {
   // spilit start
 
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(2);
-  const [selectedStatus, setSelectedStatus] = React.useState();
-  const [inputSearch,setInputSearch] = React.useState("");
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedStatus, setSelectedStatus] = React.useState("All Data");
+  const [inputSearch, setInputSearch] = React.useState("");
   const [expenseData, setExpenseData] = useState();
 
+  useEffect(() => {
+    getExpenses();
+  }, []);
+
   const filterSearch = (event) => {
-    setInputSearch(event.target.value)
-  }
-  console.log("write",inputSearch);
+    setInputSearch(event.target.value);
+  };
+  console.log("write", inputSearch);
   const handleClick = () => {
     console.info(`You clicked ${options[selectedIndex]}`);
   };
-  const handleSearch = async () =>{
-    if(selectedStatus==="All Data"){
-      
+  const handleSearch = async () => {
+    if (selectedStatus === "All Data") {
       getExpenses();
     }
-    if(selectedStatus==="User Id"){
+    if (selectedStatus === "User Id") {
       try {
-        const res = await axios.get(`http://localhost:4000/expense/userexpense/${inputSearch}`)
-        console.log("search res",res)
+        const res = await axios.get(
+          `http://localhost:4000/expense/userexpense/${inputSearch}`
+        );
+        console.log("search res", res);
         setExpenseData(res.data.expense);
       } catch (err) {
-        
+        console.log(err.message);
       }
     }
-  }
+    if (selectedStatus === "Amount") {
+      try {
+        const res = await axios.get(
+          `http://localhost:4000/expense/amount/${inputSearch}`
+        );
+        console.log("search res", res);
+        setExpenseData(res.data.expenses);
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
+    if (selectedStatus === "Status") {
+      try {
+        const res = await axios.get(
+          `http://localhost:4000/expense/status/${inputSearch}`
+        );
+        console.log("search res", res);
+        setExpenseData(res.data.expenses);
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
+    if (selectedStatus === "Date") {
+      try {
+        const res = await axios.get(
+          `http://localhost:4000/expense/date/${inputSearch}`
+        );
+        console.log("search res", res);
+        setExpenseData(res.data.expense);
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
+  };
 
   const handleMenuItemClick = async (event, index) => {
     setInputSearch("");
@@ -56,7 +94,7 @@ export const AllExpense = () => {
     setSelectedStatus(options[index]);
     console.log("index", options[index]);
   };
-  console.log("dropdown",selectedStatus);
+  console.log("dropdown", selectedStatus);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -72,10 +110,6 @@ export const AllExpense = () => {
 
   // split end
 
-  
-  useEffect(() => {
-    getExpenses();
-  }, []);
   const navigate = useNavigate();
   const getExpenses = async () => {
     const token = localStorage.getItem("token");
@@ -100,78 +134,83 @@ export const AllExpense = () => {
   return (
     <div className="admin-expense-container">
       <h1 style={{ textAlign: "center" }}>All Expenses</h1>
-      <div className="filter-dropdown">
-        <React.Fragment>
-          <ButtonGroup
-            variant="contained"
-            ref={anchorRef}
-            aria-label="split button"
-          >
-            <Button
-              onClick={handleClick}
-              style={{
-                backgroundColor:
-                  selectedStatus === "Accepted"
-                    ? "#57ba86"
-                    : selectedStatus === "Rejected"
-                    ? "#F24C3D"
-                    : "#FFFD8C",
-                color: "black",
-              }}
+      <div className="filter-search">
+        <div className="filter-dropdown">
+          <React.Fragment>
+            <ButtonGroup
+              variant="contained"
+              ref={anchorRef}
+              aria-label="split button"
             >
-              {selectedStatus}
-            </Button>
-            <Button
-              size="small"
-              aria-controls={open ? "split-button-menu" : undefined}
-              aria-expanded={open ? "true" : undefined}
-              aria-label="select merge strategy"
-              aria-haspopup="menu"
-              onClick={handleToggle}
-            >
-              <ArrowDropDownIcon />
-            </Button>
-          </ButtonGroup>
-          <Popper
-            sx={{
-              zIndex: 1,
-            }}
-            open={open}
-            anchorEl={anchorRef.current}
-            role={undefined}
-            transition
-            disablePortal
-          >
-            {({ TransitionProps, placement }) => (
-              <Grow
-                {...TransitionProps}
+              <Button
+                onClick={handleClick}
                 style={{
-                  transformOrigin:
-                    placement === "bottom" ? "center top" : "center bottom",
+                  color: "black",
                 }}
               >
-                <Paper>
-                  <ClickAwayListener onClickAway={handleClose}>
-                    <MenuList id="split-button-menu" autoFocusItem>
-                      {options.map((option, index) => (
-                        <MenuItem
-                          key={option}
-                          selected={index === selectedIndex}
-                          onClick={(event) => handleMenuItemClick(event, index)}
-                        >
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Grow>
-            )}
-          </Popper>
-        </React.Fragment>
+                {selectedStatus}
+              </Button>
+              <Button
+                size="small"
+                aria-controls={open ? "split-button-menu" : undefined}
+                aria-expanded={open ? "true" : undefined}
+                aria-label="select merge strategy"
+                aria-haspopup="menu"
+                onClick={handleToggle}
+              >
+                <ArrowDropDownIcon />
+              </Button>
+            </ButtonGroup>
+            <Popper
+              sx={{
+                zIndex: 1,
+              }}
+              open={open}
+              anchorEl={anchorRef.current}
+              role={undefined}
+              transition
+              disablePortal
+            >
+              {({ TransitionProps, placement }) => (
+                <Grow
+                  {...TransitionProps}
+                  style={{
+                    transformOrigin:
+                      placement === "bottom" ? "center top" : "center bottom",
+                  }}
+                >
+                  <Paper>
+                    <ClickAwayListener onClickAway={handleClose}>
+                      <MenuList id="split-button-menu" autoFocusItem>
+                        {options.map((option, index) => (
+                          <MenuItem
+                            key={option}
+                            selected={index === selectedIndex}
+                            onClick={(event) =>
+                              handleMenuItemClick(event, index)
+                            }
+                          >
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </MenuList>
+                    </ClickAwayListener>
+                  </Paper>
+                </Grow>
+              )}
+            </Popper>
+          </React.Fragment>
+        </div>
+        <div className="search-div">
+          <input
+            type="text"
+            placeholder="Search"
+            value={inputSearch}
+            onChange={filterSearch}
+          />
+          <button onClick={handleSearch}>Search</button>
+        </div>
       </div>
-      <input type="text" placeholder="search" value={inputSearch} onChange={filterSearch}/>
-      <button onClick={handleSearch}>Search</button>
       <Container
         sx={{
           display: "flex",

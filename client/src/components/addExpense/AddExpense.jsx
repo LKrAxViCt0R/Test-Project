@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import moment from "moment";
 import axios from "axios";
 import "./addExpense.css";
@@ -6,10 +6,11 @@ import "./addExpense.css";
 export const AddExpense = () => {
   const [expensesData, setExpensesData] = useState();
   const [resMessage, setResMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("")
   const [formInput, setFormInput] = useState({
     exp_desc: "",
     exp_date: "",
-    amount_spent: ""
+    amount_spent: "",
   });
   const [selectedImgData, setSelectedImgData] = useState(null);
   const [selectedImg1, setSelectedImg1] = useState("");
@@ -42,7 +43,6 @@ export const AddExpense = () => {
     });
   };
 
-  
   const handleFileChange = (event) => {
     const file = event.target.files && event.target.files[0];
     if (file) {
@@ -70,8 +70,9 @@ export const AddExpense = () => {
       error = "Please enter expense amount";
       setResMessage(error);
     }
-    if (error === "") await saveExpenseData(formInput);
-
+    if (error === "") {
+      await saveExpenseData(formInput);
+    }
   };
 
   const saveExpenseData = async (formData) => {
@@ -106,7 +107,7 @@ export const AddExpense = () => {
         exp_desc: formData.exp_desc,
         exp_date: formData.exp_date,
         amount_spent: formData.amount_spent,
-        reciept_image: imageUrl
+        reciept_image: imageUrl,
       };
 
       const res = await axios.post(
@@ -121,6 +122,7 @@ export const AddExpense = () => {
       );
       console.log(res);
       setResMessage("");
+      setSuccessMessage("Expense Added")
       console.log(res.data.message);
     } catch (err) {
       console.log(err.message);
@@ -131,6 +133,7 @@ export const AddExpense = () => {
     <div className="expense-add-container">
       <h1>Add Expense</h1>
       <h3>{resMessage}</h3>
+      <h3 className="success">{successMessage}</h3>
       <div className="add-form-container">
         <form onSubmit={formSubmitHandler}>
           <div className="form-input">
@@ -151,11 +154,7 @@ export const AddExpense = () => {
             />
           </div>
           <div className="form-input">
-            <input
-              type="file"
-              id="file1"
-              onChange={handleFileChange}
-            />
+            <input type="file" id="file1" onChange={handleFileChange} />
           </div>
           <button type="submit">Add Expense</button>
         </form>
