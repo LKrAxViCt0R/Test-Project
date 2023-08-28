@@ -13,6 +13,7 @@ export default function NavBar() {
   const navigate = useNavigate();
   const logoutHandler = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     navigate("/")
     
   }

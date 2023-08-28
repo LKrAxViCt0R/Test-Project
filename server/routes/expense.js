@@ -20,13 +20,13 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/add/:userId", upload.single("reciept_image"),Auth, async (req, res) => {
+router.post("/add/:userId",Auth, async (req, res) => {
   try {
     let error = "";
     const id = req.params.userId;
 
     console.log("reached expense add route");
-    const { exp_desc, exp_date, amount_spent } = req.body;
+    const { exp_desc, exp_date, amount_spent,reciept_image } = req.body;
 
     if (exp_desc == "" && error == "") {
       error = "Expense Description missing";
@@ -40,19 +40,15 @@ router.post("/add/:userId", upload.single("reciept_image"),Auth, async (req, res
       exp_date,
       amount_spent,
       exp_status: "Pending",
+      reciept_image:reciept_image,
       userId: id,
     };
-
     const expense = new Expense(expenseObj);
-    if(req.file){
-      expense.reciept_image = req.file.path
-    }
-
     await expense.save();
     return res.status(200).json({
       message: "Expense saved successfully",
       expense,
-    });
+    }); 
   } catch (err) {
     console.log(err.message);
     return res.status(500).json({

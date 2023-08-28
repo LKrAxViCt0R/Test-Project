@@ -9,10 +9,10 @@ export const AddExpense = () => {
   const [formInput, setFormInput] = useState({
     exp_desc: "",
     exp_date: "",
-    amount_spent: "",
-    reciept_image: "",
-    pdf_file: "",
+    amount_spent: ""
   });
+  const [selectedImgData, setSelectedImgData] = useState(null);
+  const [selectedImg1, setSelectedImg1] = useState("");
 
   const descHandler = (event) => {
     setFormInput((prevState) => {
@@ -42,13 +42,17 @@ export const AddExpense = () => {
     });
   };
 
-  const imgHandler = (event) => {
-    setFormInput((prevState) => {
-      return {
-        ...prevState,
-        reciept_image: event.target.value,
+  
+  const handleFileChange = (event) => {
+    const file = event.target.files && event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImg1(reader.result);
       };
-    });
+      reader.readAsDataURL(file);
+      setSelectedImgData(file);
+    }
   };
 
   const formSubmitHandler = async (event) => {
@@ -72,13 +76,37 @@ export const AddExpense = () => {
 
   const saveExpenseData = async (formData) => {
     const userId = localStorage.getItem("user");
+    let imageUrl;
+    try {
+      const apiKey = "4b10ae2f8c724e32c293659abe5af74b";
+      const uploadUrl = "https://api.imgbb.com/1/upload";
+
+      const eventData = new FormData();
+      eventData.append("key", apiKey);
+      eventData.append("image", selectedImgData);
+      const response = await fetch(uploadUrl, {
+        method: "POST",
+        body: eventData,
+      });
+      if (response.ok) {
+        const data = await response.json();
+        imageUrl = data.data.url;
+        console.log(imageUrl);
+      } else {
+        console.log(response);
+        console.log("Error in uploading poster");
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+      return;
+    }
     try {
       const expense = {
         exp_desc: formData.exp_desc,
         exp_date: formData.exp_date,
         amount_spent: formData.amount_spent,
-        reciept_image: formData.reciept_image,
-        pdf_file: formData.pdf_file,
+        reciept_image: imageUrl
       };
 
       const res = await axios.post(
@@ -125,25 +153,8 @@ export const AddExpense = () => {
           <div className="form-input">
             <input
               type="file"
-              accept="image/*" // Allow all image types
-              onChange={(event) =>
-                setFormInput((prevState) => ({
-                  ...prevState,
-                  reciept_image: event.target.files[0],
-                }))
-              }
-            />
-          </div>
-          <div className="form-input">
-            <input
-              type="file"
-              accept="application/pdf" // Restrict file selection to PDFs
-              onChange={(event) =>
-                setFormInput((prevState) => ({
-                  ...prevState,
-                  pdf_file: event.target.files[0],
-                }))
-              }
+              id="file1"
+              onChange={handleFileChange}
             />
           </div>
           <button type="submit">Add Expense</button>
