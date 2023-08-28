@@ -8,15 +8,21 @@ import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
+import {useState} from "react";
 
 const options = ['Accepted', 'Rejected', 'Pending'];
 
 export default function SplitButton(props) {
+  console.log("temp",props.expenseStatus)
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const [selectedIndex, setSelectedIndex] = React.useState(2);
-  const [selectedStatus, setSelectedStatus] = React.useState(props.expenseStatus);
-
+  const [selectedStatus, setSelectedStatus] = useState();
+  React.useEffect(()=>{
+    setSelectedStatus(props.expenseStatus);
+  },[props.expenseStatus])
+  
+  console.log("state",selectedStatus)
   const handleClick = () => {
     console.info(`You clicked ${options[selectedIndex]}`);
   };

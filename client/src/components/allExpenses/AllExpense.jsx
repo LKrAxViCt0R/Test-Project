@@ -12,6 +12,7 @@ import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
+import moment from "moment";
 import "./allExpenses.css";
 
 const options = ["All Data", "User Id", "Amount", "Status", "Date"];
@@ -31,6 +32,7 @@ export const AllExpense = () => {
   }, []);
 
   const filterSearch = (event) => {
+    console.log(event.target.value);
     setInputSearch(event.target.value);
   };
   console.log("write", inputSearch);
@@ -46,7 +48,7 @@ export const AllExpense = () => {
         const res = await axios.get(
           `http://localhost:4000/expense/userexpense/${inputSearch}`
         );
-        console.log("search res", res);
+        //console.log("search res", res);
         setExpenseData(res.data.expense);
       } catch (err) {
         console.log(err.message);
@@ -57,7 +59,7 @@ export const AllExpense = () => {
         const res = await axios.get(
           `http://localhost:4000/expense/amount/${inputSearch}`
         );
-        console.log("search res", res);
+        //console.log("search res", res);
         setExpenseData(res.data.expenses);
       } catch (err) {
         console.log(err.message);
@@ -76,11 +78,12 @@ export const AllExpense = () => {
     }
     if (selectedStatus === "Date") {
       try {
+        const date = moment(inputSearch, 'DD/MM/YYYY').format('DD-MM-YYYY');
         const res = await axios.get(
-          `http://localhost:4000/expense/date/${inputSearch}`
+          `http://localhost:4000/expense/date/${date}`
         );
         console.log("search res", res);
-        setExpenseData(res.data.expense);
+        setExpenseData(res.data.expenses);
       } catch (err) {
         console.log(err.message);
       }
@@ -92,7 +95,7 @@ export const AllExpense = () => {
     setSelectedIndex(index);
     setOpen(false);
     setSelectedStatus(options[index]);
-    console.log("index", options[index]);
+    //console.log("index", options[index]);
   };
   console.log("dropdown", selectedStatus);
 
@@ -118,7 +121,7 @@ export const AllExpense = () => {
     }
     try {
       const res = await axios.get("http://localhost:4000/expense");
-      console.log("data res", res);
+      //console.log("data res", res);
       setExpenseData(res.data.expenses);
     } catch (err) {
       if (err.response) {
@@ -130,7 +133,7 @@ export const AllExpense = () => {
       }
     }
   };
-  console.log("data", expenseData);
+  //console.log("data", expenseData);
   return (
     <div className="admin-expense-container">
       <h1 style={{ textAlign: "center" }}>All Expenses</h1>

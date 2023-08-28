@@ -3,6 +3,8 @@ const { Expense } = require("../models/Expense");
 const Auth = require("../middlewares/Auth");
 const AdminAuth = require("../middlewares/AdminAuth");
 const upload = require("../middlewares/upload")
+const moment = require('moment');
+
 const router = express.Router();
 
 router.get("/", async (req, res) => {
@@ -100,7 +102,8 @@ router.get("/userexpense/:userId", async (req, res) => {
 router.get("/date/:date", async (req, res) => {
   try {
     const date = req.params.date;
-    const expenses = await Expense.find({ exp_date: date });
+    const formattedDate = moment(date, 'DD-MM-YYYY').format('YYYY-MM-DD');
+    const expenses = await Expense.find({ exp_date: formattedDate });
 
     return res.status(200).json({
       message: "Data fetched successfully",

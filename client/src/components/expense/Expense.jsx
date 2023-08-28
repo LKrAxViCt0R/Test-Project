@@ -48,6 +48,7 @@ const style = {
 };
 
 export function Expense(props) {
+  console.log(props.status)
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
